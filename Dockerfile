@@ -5,6 +5,7 @@ ENV KOPS_VERSION=1.8.0
 # latest stable kubectl: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
 ENV KUBECTL_VERSION=v1.8.4
 ENV TERRAFORM_VERSION=0.10.7
+ENV HELM_VERSION=v2.7.2
 
 RUN apk --no-cache update \
   && apk --no-cache add ca-certificates python py-pip py-setuptools groff less \
@@ -18,6 +19,11 @@ RUN apk --no-cache update \
   && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
   && mv terraform /usr/local/bin/terraform \
   && chmod +x /usr/local/bin/kops /usr/local/bin/kubectl /usr/local/bin/terraform  \
+  && curl -LO --silent --show-error http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && tar -xvf helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && mv linux-amd64/helm /usr/local/bin/helm \
+  && rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && rm -rf linux-amd64/ \
   && apk del --purge build-dependencies \
   && rm -rf terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
