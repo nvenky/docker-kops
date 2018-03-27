@@ -1,15 +1,15 @@
 FROM alpine:latest
 
-ENV KOPS_VERSION=1.8.0
+ENV KOPS_VERSION=1.8.1
 # https://kubernetes.io/docs/tasks/kubectl/install/
 # latest stable kubectl: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-ENV KUBECTL_VERSION=v1.8.4
-ENV TERRAFORM_VERSION=0.10.7
-ENV HELM_VERSION=v2.7.2
+ENV KUBECTL_VERSION=v1.10.0
+ENV TERRAFORM_VERSION=0.11.5
+ENV HELM_VERSION=v2.8.2
 
 RUN apk --no-cache update \
   && apk --no-cache add ca-certificates python py-pip py-setuptools groff less \
-  && apk --no-cache add --virtual build-dependencies curl \
+  && apk --no-cache add --virtual build-dependencies curl mkpasswd\
   && pip --no-cache-dir install awscli \
   && curl -LO --silent --show-error https://github.com/kubernetes/kops/releases/download/${KOPS_VERSION}/kops-linux-amd64 \
   && mv kops-linux-amd64 /usr/local/bin/kops \

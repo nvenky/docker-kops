@@ -9,11 +9,12 @@ Production Grade K8s Installation, Upgrades, and Management
 * AWS CLI
 * Terraform
 * HELM
+* mkpasswd
 
 ```bash
 (sample vars)
-export NAME=k8s.shanelee.name.k8s.local
-export KOPS_STATE_STORE=s3://shane-k8s-bucket
+export NAME=cluster.name.k8s.local
+export KOPS_STATE_STORE=s3://k8s-custer-state
 export KUBECONFIG=~/stacks/${NAME}/kubeconfig
 export AWS_REGION=ap-southeast-2
 
@@ -27,7 +28,7 @@ docker run --rm -it \
   -v "$HOME"/.kube:/root/.kube:rw \
   -v "$(pwd)":/workdir \
   -w /workdir \
-  shanelee007/alpine-kops
+  nvenky/kubernetes-tools
 
 ```
 
@@ -40,8 +41,6 @@ It is difficult to setup and run KOPS, KUBECTL etc on a Windows box. Use this do
 #### Mount local files to docker-machine
 
 Share your c/d drive folder to the Docker machine VM as shown below (eg., c:\projects is mounted as /projects):
-
-![Shared Folder](doc/SharedFolder.png "SharedFolder")
 
 Restart the docker-machine with following command
 
@@ -68,16 +67,16 @@ Run the following if you have AWS CLI already configured
 ````
 $AWS_ACCESS_KEY_ID = aws --profile default configure get aws_access_key_id
 $AWS_SECRET_ACCESS_KEY= aws --profile default configure get aws_secret_access_key
-docker run -it --rm -p 80:80 -v /projects:/data -e NAME=atlas.rts.onl -e KOPS_STATE_STORE=s3://alcyon-k8s-bucket -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY shanelee007/alpine-kops:latest
+docker run -it --rm -p 80:80 -v /projects:/data -e NAME=cluster.name.k8s.local -e KOPS_STATE_STORE=s3://k8s-custer-state -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY nvenky/kubernetes-tools:latest
 ````
 
 Else, set the access key and secret key in the following command
 ````
-docker run -it --rm -p 80:80 -v /project:/data -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> -e NAME=atlas.rts.onl -e KOPS_STATE_STORE=s3://alcyon-k8s-bucket  shanelee007/alpine-kops:latest
+docker run -it --rm -v /project:/data -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> -e NAME=cluster.name.k8s.local -e KOPS_STATE_STORE=s3://k8s-custer-state  nvenky/kubernetes-tools:latest
 ````
 
 In the container, run the following commands to check whether you are able to connect with the K8s cluster.
 ```` 
-kops export kubecfg atlas.rts.onl
+kops export kubecfg cluster.name.k8s.local
 kubectl get nodes  
 ````
